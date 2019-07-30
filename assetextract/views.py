@@ -1,23 +1,42 @@
 from . import app, fd
-from flask import jsonify
+from flask import request, jsonify
+from .models.furnidata import Furnidata
 
 @app.route('/')
 def hello():
     return 'hmmm?'
 
-@app.route('/furnitype/<int:id>', methods=['GET'])
-def route_furnitype(id):
-    res = {}
-    node = next((item for item in fd.furnitypes if int(item['id']) == id), False)
-
-    if node:
-        res = node
+@app.route('/furnidata/room/furnitype/<int:id>', methods=['GET'])
+def route_room_furnitype(id):
+    if fd.roomitemtypes[id]:
+        res = fd.roomitemtypes[id]
+        res['id'] = str(id)
+    else:
+        res = {}
 
     return jsonify(res)
 
+@app.route('/furnidata/wall/furnitype/<int:id>', methods=['GET'])
+def route_wall_furnitype(id):
+    if fd.wallitemtypes[id]:
+        res = fd.wallitemtypes[id]
+        res['id'] = str(id)
+    else:
+        res = {}
 
-#@app.route('/furnitype/<int:id>/<string:attribute>')
+    return jsonify(res)
 
+@app.route('/furnidata', methods=['GET'])
+def route_furnidata_actions():
+    actions = {
+        'save': fd.save_xml
+    }
+    action = request.args.get('action')
+
+    if actions[action]:
+        actions[action]()
+
+    return jsonify({})
 
 # TODO: missing 'adurl' and 'customparams' (which are normally empty)
 @app.route('/xml/save')

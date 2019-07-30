@@ -1,6 +1,5 @@
 import requests
 import json
-from xml.etree.ElementTree import Element, ElementTree
 from flask import Flask, escape, request
 
 app = Flask(__name__, instance_relative_config=True)

@@ -1,15 +1,25 @@
-import xml.etree.ElementTree as ET
 from .. import app
+import xml.etree.ElementTree as ET
+from xml.etree.ElementTree import Element, ElementTree
 
 class Furnidata:
     def __init__(self, xmlfile):
         tree = ET.parse(xmlfile)
         root = tree.getroot()
 
-        fd = []
+        roomitemtypes = Furnidata.furnitypes_to_dict(root, 'roomitemtypes')
+        wallitemtypes = Furnidata.furnitypes_to_dict(root, 'wallitemtypes')
 
-        for item in root.findall('./roomitemtypes/furnitype'):
-            item_dict = {'id': item.attrib['id'], 'classname': item.attrib['classname']}
+        self.roomitemtypes = roomitemtypes
+        self.wallitemtypes = wallitemtypes
+
+    @staticmethod
+    def furnitypes_to_dict(root, tagname):
+        obj = {}
+
+        for item in root.findall('./{}/furnitype'.format(tagname)):
+            item_dict = {'classname': item.attrib['classname']}
+            index = int(item.attrib['id'])
 
             for child in item:
                 if(child.text):
@@ -24,10 +34,45 @@ class Furnidata:
 
                     item_dict[child.tag] = subitems
 
-            fd.append(item_dict)
+            obj[index] = item_dict
 
-        self.furnitypes = fd
-        print(fd)
+        return obj
+
+    def save_xml(self):
+        root = Element('furnidata')
+        rooms = Element('roomitemtypes')
+        walls = Element('wallitemtypes')
+
+        for ft_key, ft_dict in self.roomitemtypes.items():
+            ft = Element('furnitype')
+            ft.set('id', str(ft_key))
+            ft.set('classname', ft_dict['classname'])
+
+            for key, val in ft_dict.items():
+                if(key != 'id' and key != 'classname'):
+                    child = Element(key)
+
+                    if(isinstance(val, list)):
+                        for d in val:
+                            for k, v in d.items():
+                                subchild = Element(k)
+                                subchild.text = v
+                                child.append(subchild)
+                    else:
+                        child.text = val
+
+                    ft.append(child)
+
+            rooms.append(ft)
+            #print(ft)
+
+        root.append(rooms)
+        root.append(walls)
+        tree = ElementTree(root)
+        tree.write(open('xml/furnidata-sea.xml', 'wb'), encoding='utf-8', xml_declaration=True)
+        
+        print(' - [LOG] saved xml file.')
+        return 'hey'
 
 
 def get_furnidata():
