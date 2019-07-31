@@ -1,5 +1,5 @@
 from . import app, fd
-from flask import request, jsonify
+from flask import request, jsonify, Response
 from .models.furnidata import Furnidata
 
 @app.route('/')
@@ -45,5 +45,9 @@ def route_furnidata_actions():
     if actions[action]:
         actions[action]()
 
-    return jsonify({})
+    res = Response({}, status=201)
+    res.headers['Location'] = request.base_url + '/' + app.config['XML_OUTPUT']
 
+    return res
+
+#@app.route('/furnidata/xml/<string:filename>')
