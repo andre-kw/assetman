@@ -28,6 +28,6 @@ from assetextract.models.furnidata import Furnidata
 
 # TODO: check if furnidata-habbo.xml exists first
 Furnidata.download()
-fd = Furnidata('xml/furnidata-habbo.xml')
+fd = Furnidata(app.config['XML_INPUT'])
 
 import assetextract.views

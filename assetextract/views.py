@@ -18,7 +18,7 @@ def get_furnitype(type, id):
 
     return res
 
-def post_furnitype(type, id, form):
+def patch_furnitype(type, id, form):
     dic = fd.wallitemtypes if type == 'wall' else fd.roomitemtypes
 
     if id in dic:
@@ -30,27 +30,27 @@ def post_furnitype(type, id, form):
 
         dic[id] = new_item
 
-    res = Response({}, status=201)
+    res = Response({}, status=204)
     res.headers['Location'] = request.base_url
     return res
 
 
 # routes
-@app.route('/furnidata/room/furnitype/<int:id>', methods=['GET', 'POST'])
+@app.route('/furnidata/room/furnitype/<int:id>', methods=['GET', 'PATCH'])
 def route_room_furnitype(id):
     if request.method == 'GET':
         res = jsonify(get_furnitype('room', id))
-    elif request.method == 'POST':
-        res = post_furnitype('room', id, request.form)
+    elif request.method == 'PATCH':
+        res = patch_furnitype('room', id, request.form)
 
     return res
 
-@app.route('/furnidata/wall/furnitype/<int:id>', methods=['GET', 'POST'])
+@app.route('/furnidata/wall/furnitype/<int:id>', methods=['GET', 'PATCH'])
 def route_wall_furnitype(id):
     if request.method == 'GET':
         res = jsonify(get_furnitype('wall', id))
-    elif request.method == 'POST':
-        res = post_furnitype('wall', id, request.form)
+    elif request.method == 'PATCH':
+        res = patch_furnitype('wall', id, request.form)
 
     return res
 
