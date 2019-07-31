@@ -1,2 +1,4 @@
 FLASK_APP=assetextract
 FLASK_ENV=development
+FLASK_RUN_PORT=5001
+FLASK_SKIP_DOTENV=1

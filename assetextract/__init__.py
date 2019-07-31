@@ -1,7 +1,9 @@
 import requests
 import json
 import logging
-from flask import Flask, escape, request
+from flask import Flask, escape, request, cli
+
+cli.load_dotenv('../.flaskenv')
 
 app = Flask(__name__, instance_relative_config=True)
 app.config.from_pyfile('config.cfg')
