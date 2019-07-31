@@ -78,7 +78,7 @@ class Furnidata:
     @staticmethod
     def download():
         url = app.config['RES_URL'].format('gamedata/furnidata_xml/0')
-        log.info('::1 Attempting to download furnidata from {}'.format(url))
+        log.info('::1 Attempting to download furnidata from {} (not really)'.format(url))
 
         """
         res = requests.get(url)
