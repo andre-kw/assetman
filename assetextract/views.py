@@ -18,22 +18,41 @@ def get_furnitype(type, id):
 
     return res
 
+def post_furnitype(type, id, form):
+    dic = fd.wallitemtypes if type == 'wall' else fd.roomitemtypes
+
+    if id in dic:
+        item = dic[id]
+        new_item = {}
+
+        for k, v in item.items():
+            new_item[k] = form.get(k, v)
+
+        dic[id] = new_item
+
+    res = Response({}, status=201)
+    res.headers['Location'] = request.base_url
+    return res
+
 
 # routes
-@app.route('/furnidata/room/furnitype/<int:id>', methods=['GET'])
+@app.route('/furnidata/room/furnitype/<int:id>', methods=['GET', 'POST'])
 def route_room_furnitype(id):
     if request.method == 'GET':
-        res = get_furnitype('room', id)
+        res = jsonify(get_furnitype('room', id))
+    elif request.method == 'POST':
+        res = post_furnitype('room', id, request.form)
 
-    return jsonify(res)
+    return res
 
-
-@app.route('/furnidata/wall/furnitype/<int:id>', methods=['GET'])
+@app.route('/furnidata/wall/furnitype/<int:id>', methods=['GET', 'POST'])
 def route_wall_furnitype(id):
     if request.method == 'GET':
-        res = get_furnitype('wall', id)
+        res = jsonify(get_furnitype('wall', id))
+    elif request.method == 'POST':
+        res = post_furnitype('wall', id, request.form)
 
-    return jsonify(res)
+    return res
 
 @app.route('/furnidata', methods=['GET'])
 def route_furnidata_actions():
