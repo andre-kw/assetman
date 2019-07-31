@@ -8,6 +8,7 @@ cli.load_dotenv('../.flaskenv')
 app = Flask(__name__, instance_relative_config=True)
 app.config.from_pyfile('config.cfg')
 
+# configure logging
 if app.config['DEBUG']:
     log_level = logging.DEBUG
 elif app.config['ENVIRONMENT'] == 'development':
@@ -16,7 +17,7 @@ else:
     log_level = logging.WARNING
 
 logging.basicConfig(level=log_level)
-
+log = logging.getLogger(__name__)
 
 from assetextract.models.furnidata import Furnidata
 

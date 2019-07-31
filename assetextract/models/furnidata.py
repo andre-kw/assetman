@@ -1,4 +1,4 @@
-from .. import app
+from .. import app, log
 from xml.etree.ElementTree import Element, ElementTree
 import xml.etree.ElementTree as ET
 import logging
@@ -72,13 +72,13 @@ class Furnidata:
         tree = ElementTree(root)
         tree.write(open(app.config['XML_OUTPUT'], 'wb'), encoding='utf-8', xml_declaration=True)
         
-        logging.info('Furnidata saved to {}'.format(app.config['XML_OUTPUT']))
+        log.info('Furnidata saved to {}'.format(app.config['XML_OUTPUT']))
         return True
 
     @staticmethod
     def download():
         url = app.config['RES_URL'].format('gamedata/furnidata_xml/0')
-        logging.info('Attempting to download furnidata from {}'.format(url))
+        log.info('Attempting to download furnidata from {}'.format(url))
 
         """
         res = requests.get(url)
