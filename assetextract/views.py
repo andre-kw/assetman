@@ -58,14 +58,14 @@ def route_wall_furnitype(id):
 def route_furnidata_actions():
     action = request.args.get('action')
     actions = {
-        'save': fd.save_xml
+        'save': fd.save_xml,
+        'download': Furnidata.download
     }
 
     if actions[action]:
         actions[action]()
 
     res = Response({}, status=201)
-    res.headers['Location'] = request.base_url + '/' + app.config['XML_OUTPUT']
 
     return res
 
