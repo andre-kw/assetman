@@ -1,6 +1,7 @@
 from .. import app
-import xml.etree.ElementTree as ET
 from xml.etree.ElementTree import Element, ElementTree
+import xml.etree.ElementTree as ET
+import logging
 
 class Furnidata:
     def __init__(self, xmlfile):
@@ -65,15 +66,19 @@ class Furnidata:
                     ft.append(child)
 
             rooms.append(ft)
-            #print(ft)
 
         root.append(rooms)
         root.append(walls)
         tree = ElementTree(root)
-        tree.write(open('xml/furnidata-sea.xml', 'wb'), encoding='utf-8', xml_declaration=True)
+        tree.write(open(app.config['XML_OUTPUT'], 'wb'), encoding='utf-8', xml_declaration=True)
         
-        print(' - [LOG] saved xml file.')
+        logging.info('Furnidata saved to {}'.format(app.config['XML_OUTPUT']))
         return True
+
+    @staticmethod
+    def download():
+        url = app.config['RES_URL'].format('gamedata/furnidata_xml/0')
+        logging.INFO('Attempting to download furnidata from {}'.format(url))
 
 
 def get_furnidata():
