@@ -38,6 +38,7 @@ class Furnidata:
 
         return obj
 
+    # TODO: missing 'adurl' and 'customparams' (which are normally empty)
     def save_xml(self):
         root = Element('furnidata')
         rooms = Element('roomitemtypes')
@@ -72,7 +73,7 @@ class Furnidata:
         tree.write(open('xml/furnidata-sea.xml', 'wb'), encoding='utf-8', xml_declaration=True)
         
         print(' - [LOG] saved xml file.')
-        return 'hey'
+        return True
 
 
 def get_furnidata():
