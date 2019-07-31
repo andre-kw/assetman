@@ -72,13 +72,13 @@ class Furnidata:
         tree = ElementTree(root)
         tree.write(open(app.config['XML_OUTPUT'], 'wb'), encoding='utf-8', xml_declaration=True)
         
-        log.info('Furnidata saved to {}'.format(app.config['XML_OUTPUT']))
+        log.info('::1 Furnidata saved to {}'.format(app.config['XML_OUTPUT']))
         return True
 
     @staticmethod
     def download():
         url = app.config['RES_URL'].format('gamedata/furnidata_xml/0')
-        log.info('Attempting to download furnidata from {}'.format(url))
+        log.info('::1 Attempting to download furnidata from {}'.format(url))
 
         """
         res = requests.get(url)

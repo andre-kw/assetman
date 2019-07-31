@@ -3,21 +3,26 @@ import json
 import logging
 from flask import Flask, escape, request, cli
 
-cli.load_dotenv('../.flaskenv')
+#cli.load_dotenv('../.flaskenv')
 
 app = Flask(__name__, instance_relative_config=True)
 app.config.from_pyfile('config.cfg')
 
-# configure logging
-if app.config['DEBUG']:
-    log_level = logging.DEBUG
-elif app.config['ENVIRONMENT'] == 'development':
-    log_level = logging.INFO
-else:
-    log_level = logging.WARNING
+def get_logger():
+    if app.config['DEBUG']:
+        log_level = logging.DEBUG
+    elif app.config['ENVIRONMENT'] == 'development':
+        log_level = logging.INFO
+    else:
+        log_level = logging.WARNING
 
-logging.basicConfig(level=log_level)
-log = logging.getLogger(__name__)
+    log = logging.getLogger('werkzeug')
+    log.setLevel(log_level)
+
+    return log
+
+log = get_logger()
+
 
 from assetextract.models.furnidata import Furnidata
 
