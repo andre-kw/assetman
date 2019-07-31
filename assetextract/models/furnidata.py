@@ -78,13 +78,12 @@ class Furnidata:
     @staticmethod
     def download():
         url = app.config['RES_URL'].format('gamedata/furnidata_xml/0')
-        logging.INFO('Attempting to download furnidata from {}'.format(url))
+        logging.info('Attempting to download furnidata from {}'.format(url))
 
+        """
+        res = requests.get(url)
 
-def get_furnidata():
-    url = app.config['RES_URL'].format('gamedata/furnidata_xml/0')
-    res = requests.get(url)
-
-    with open('xml/furnidata-habbo.xml', 'wb') as f:
-        f.write(res.content)
+        with open('xml/furnidata-habbo.xml', 'wb') as f:
+            f.write(res.content)
+        """
 

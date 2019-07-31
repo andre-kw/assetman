@@ -18,6 +18,7 @@ logging.basicConfig(level=log_level)
 
 from assetextract.models.furnidata import Furnidata
 
+# TODO: check if furnidata-habbo.xml exists first
 Furnidata.download()
 fd = Furnidata('xml/furnidata-habbo.xml')
 
