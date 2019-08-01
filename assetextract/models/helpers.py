@@ -66,3 +66,14 @@ class Helpers:
         dic[id] = item[index]
         
         return app.make_response((item, 201, {'Location': request.base_url}))
+
+    @staticmethod
+    def delete_furnitype(type, id):
+        dic = fd.wallitemtypes if type == 'wall' else fd.roomitemtypes
+
+        if id not in dic:
+            return app.make_response(({'error': 'ID not found.'}, 404))
+
+        del dic[id]
+
+        return app.make_response(('', 204))
