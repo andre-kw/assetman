@@ -1,6 +1,7 @@
 from .. import app, log
 from xml.etree.ElementTree import Element, ElementTree
 from shutil import copyfile
+from flask import jsonify, request
 import xml.etree.ElementTree as ET
 import logging
 import requests
@@ -17,6 +18,7 @@ class Furnidata:
         self.roomitemtypes = roomitemtypes
         self.wallitemtypes = wallitemtypes
 
+    # helpers
     @staticmethod
     def furnitypes_to_dict(root, tagname):
         obj = {}
@@ -42,6 +44,7 @@ class Furnidata:
 
         return obj
 
+    # actions
     # TODO: missing 'adurl' and 'customparams' (which are normally empty)
     def save_xml(self):
         root = Element('furnidata')
@@ -76,7 +79,8 @@ class Furnidata:
         tree.write(open(app.config['XML_OUTPUT'], 'wb'), encoding='utf-8', xml_declaration=True)
         
         log.info('::1 Furnidata saved to %s', app.config['XML_OUTPUT'])
-        return True
+
+        return app.make_response(('', 204))
 
     @staticmethod
     def download():
@@ -91,8 +95,7 @@ class Furnidata:
 
         log.info('::1 Furnidata downloaded successfully')
 
-        return True
-
+        return app.make_response(('', 204))
 
     @staticmethod
     def copy():
@@ -105,4 +108,84 @@ class Furnidata:
         else:
             log.warning('::1 File %s does not exist. Please download and try again.', src)
 
-        return True
+        return app.make_response(('', 204))
+
+    def search(self, key, val):
+        if not key or not val:
+            return app.make_response(({'error': 'Missing key and/or val in request body.'}, 400))
+
+        return app.make_response(('not yet implemented', 200))
+
+
+    # http verbs
+    def get_furnitype(self, type, id):
+        dic = self.wallitemtypes if type == 'wall' else self.roomitemtypes
+        
+        if id in dic:
+            res = dic[id]
+            res['id'] = str(id)
+        else:
+            res = {}
+
+        return jsonify(res)
+
+    def patch_furnitype(self, type, id, form):
+        dic = self.wallitemtypes if type == 'wall' else self.roomitemtypes
+
+        if id in dic:
+            item = dic[id]
+            new_item = {}
+
+            for k, v in item.items():
+                new_item[k] = form.get(k, v)
+
+            dic[id] = new_item
+
+        return app.make_response(('', 204, {'Location': request.base_url}))
+
+    def post_furnitype(self, type, id, form):
+        dic = self.wallitemtypes if type == 'wall' else self.roomitemtypes
+        index = str(id)
+        item = {}
+        partcolors = []
+
+        if id in dic:
+            return app.make_response(({'error': 'ID already exists'}, 409))
+
+        item[index] = {
+            'bc': request.form.get('bc', '0'),
+            'buyout': request.form.get('buyout', '0'),
+            'canlayon': request.form.get('canlayon', '0'),
+            'cansiton': request.form.get('cansiton', '0'),
+            'canstandon': request.form.get('canstandon', '0'),
+            'classname': request.form.get('classname', ''),
+            'defaultdir': request.form.get('defaultdir', '0'),
+            'description': request.form.get('description', ''),
+            'excludeddynamic': request.form.get('excludeddynamic', '0'),
+            'excludeddynamic': request.form.get('excludeddynamic', '0'),
+            'furniline': request.form.get('furniline', ''),
+            'id': str(id),
+            'name': request.form.get('name', ''),
+            'offerid': request.form.get('offerid', '-1'),
+            'partcolors': partcolors,
+            'rentbuyout': request.form.get('rentbuyout', '0'),
+            'rentofferid': request.form.get('rentofferid', '-1'),
+            'revision': request.form.get('revision', '1'),
+            'specialtype': request.form.get('specialtype', '1'),
+            'xdim': request.form.get('xdim', '1'),
+            'ydim': request.form.get('ydim', '1')
+        }
+
+        dic[id] = item[index]
+        
+        return app.make_response((item, 201, {'Location': request.base_url}))
+
+    def delete_furnitype(self, type, id):
+        dic = self.wallitemtypes if type == 'wall' else self.roomitemtypes
+
+        if id not in dic:
+            return app.make_response(({'error': 'ID not found.'}, 404))
+
+        del dic[id]
+
+        return app.make_response(('', 204))
