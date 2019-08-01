@@ -28,9 +28,11 @@ log = get_logger()
 from assetextract.models.furnidata import Furnidata
 
 if not os.path.isfile(app.config['XML_INPUT']):
+    log.warning('::1 File {} does not exist. Attempting to download...'.format(app.config['XML_INPUT']))
     Furnidata.download()
 
 if not os.path.isfile(app.config['XML_OUTPUT']):
+    log.warning('::1 File {} does not exist. Creating...'.format(app.config['XML_OUTPUT']))
     Furnidata.copy()
 
 fd = Furnidata(app.config['XML_INPUT'])

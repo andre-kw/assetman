@@ -3,6 +3,8 @@ from xml.etree.ElementTree import Element, ElementTree
 from shutil import copyfile
 import xml.etree.ElementTree as ET
 import logging
+import requests
+import os.path
 
 class Furnidata:
     def __init__(self, xmlfile):
@@ -78,21 +80,29 @@ class Furnidata:
 
     @staticmethod
     def download():
+        if not os.path.exists('xml'):
+            os.mkdir('xml')
+
         url = app.config['RES_URL'].format('gamedata/furnidata_xml/0')
-
-        log.info('::1 Attempting to download furnidata from {} (not really)'.format(url))
-
-        """
         res = requests.get(url)
 
-        with open('xml/furnidata-habbo.xml', 'wb') as f:
+        with open(app.config['XML_INPUT'], 'wb') as f:
             f.write(res.content)
-        """
+
+        log.info('::1 Furnidata downloaded successfully')
+
+        return True
+
 
     @staticmethod
     def copy():
         src = app.config['XML_INPUT']
         dst = app.config['XML_OUTPUT']
 
-        copyfile(src, dst)
-        log.info('::1 Copied {} to {}'.format(src, dst))
+        if os.path.isfile(src):
+            copyfile(src, dst)
+            log.info('::1 Copied {} to {}'.format(src, dst))
+        else:
+            log.warning('::1 File {} does not exist. Please download and try again.'.format(src))
+
+        return True
