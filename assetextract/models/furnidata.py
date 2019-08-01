@@ -1,5 +1,6 @@
 from .. import app, log
 from xml.etree.ElementTree import Element, ElementTree
+from shutil import copyfile
 import xml.etree.ElementTree as ET
 import logging
 
@@ -78,6 +79,7 @@ class Furnidata:
     @staticmethod
     def download():
         url = app.config['RES_URL'].format('gamedata/furnidata_xml/0')
+
         log.info('::1 Attempting to download furnidata from {} (not really)'.format(url))
 
         """
@@ -87,3 +89,10 @@ class Furnidata:
             f.write(res.content)
         """
 
+    @staticmethod
+    def copy():
+        src = app.config['XML_INPUT']
+        dst = app.config['XML_OUTPUT']
+
+        copyfile(src, dst)
+        log.info('::1 Copied {} to {}'.format(src, dst))

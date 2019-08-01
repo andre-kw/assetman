@@ -1,7 +1,8 @@
+from flask import Flask, escape, request, cli
 import requests
 import json
 import logging
-from flask import Flask, escape, request, cli
+import os.path
 
 #cli.load_dotenv('../.flaskenv')
 
@@ -26,8 +27,12 @@ log = get_logger()
 
 from assetextract.models.furnidata import Furnidata
 
-# TODO: check if furnidata-habbo.xml exists first
-Furnidata.download()
+if not os.path.isfile(app.config['XML_INPUT']):
+    Furnidata.download()
+
+if not os.path.isfile(app.config['XML_OUTPUT']):
+    Furnidata.copy()
+
 fd = Furnidata(app.config['XML_INPUT'])
 
 import assetextract.views
