@@ -75,7 +75,7 @@ class Furnidata:
         tree = ElementTree(root)
         tree.write(open(app.config['XML_OUTPUT'], 'wb'), encoding='utf-8', xml_declaration=True)
         
-        log.info('::1 Furnidata saved to {}'.format(app.config['XML_OUTPUT']))
+        log.info('::1 Furnidata saved to %s', app.config['XML_OUTPUT'])
         return True
 
     @staticmethod
@@ -101,8 +101,8 @@ class Furnidata:
 
         if os.path.isfile(src):
             copyfile(src, dst)
-            log.info('::1 Copied {} to {}'.format(src, dst))
+            log.info('::1 Copied %s to %s', src, dst)
         else:
-            log.warning('::1 File {} does not exist. Please download and try again.'.format(src))
+            log.warning('::1 File %s does not exist. Please download and try again.', src)
 
         return True
