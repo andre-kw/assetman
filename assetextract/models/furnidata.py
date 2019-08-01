@@ -110,38 +110,23 @@ class Furnidata:
 
         return app.make_response(('', 204))
 
+    # TODO: key and val should be sanitized
     def search(self, key, val):
-        inserts = ('classname', 'name')
-
         if not key or not val:
             return app.make_response(({'error': 'Missing key and/or val in request body.'}, 400))
 
-        # TODO: key and val should be sanitized
-        roomitemtypes_dict = {k: v for k, v in self.roomitemtypes.items() if v[key] == val}
-        wallitemtypes_dict = {k: v for k, v in self.wallitemtypes.items() if v[key] == val}
         roomitemtypes = []
         wallitemtypes = []
 
-        for id, dic in roomitemtypes_dict.items():
-            obj = {'id': id}
+        for k, v in self.roomitemtypes.items():
+            if v[key] == val:
+                item = {'id': k, 'classname': v['classname'], 'name': v['name']}
+                roomitemtypes.append(item)
+        for k, v in self.wallitemtypes.items():
+            if v[key] == val:
+                item = {'id': k, 'classname': v['classname'], 'name': v['name']}
+                wallitemtypes.append(item)
 
-            for k, v in dic.items():
-                if k in inserts:
-                    obj[k] = v
-                
-            roomitemtypes.append(obj)
-
-        for id, dic in wallitemtypes_dict.items():
-            obj = {'id': id}
-
-            for k, v in dic.items():
-                if k in inserts:
-                    obj[k] = v
-                
-            wallitemtypes.append(obj)
-
-
-        #res = {'roomitemtypes': list(roomitemtypes.keys()), 'wallitemtypes': list(wallitemtypes.keys())}
         res = {'roomitemtypes': roomitemtypes, 'wallitemtypes': wallitemtypes}
 
         return app.make_response((res, 200))
